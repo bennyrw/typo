@@ -98,3 +98,7 @@ irc: xal
 
 Enjoy,
 The Typo team
+
+h1. Addendum
+
+Some portions modified by Ben Morris 2013 for SaaS course.
