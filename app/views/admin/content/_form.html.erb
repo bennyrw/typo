@@ -147,6 +147,18 @@
       <%= render 'admin/content/attachment', { :attachment_num => 1, :hidden => false } -%>
     </ul>
   </div>    
+
+  <% if @article.id %>
+  <div class=''>
+    <h4><%= _("Merge Articles") %></h4>
+    <%= label_tag 'merge_with', 'Article ID' -%>
+    <%= # use text_field_tag since text_field is for accessing fields on the template object
+        text_field_tag 'merge_with'
+    -%>
+    <%= link_to _("Merge"), {:controller => 'admin/content', :action => 'merge', :id => @article.id }, :class => 'btn info' %>
+  </div>
+  <% end %>
+
   </div>
 
 </div>
