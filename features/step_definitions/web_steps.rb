@@ -38,8 +38,21 @@ Given /^the blog is set up$/ do
   User.create!({:login => 'admin',
                 :password => 'aaaaaaaa',
                 :email => 'joe@snow.com',
-                :profile_id => 1,
+                :profile_id => 1, #admin
                 :name => 'admin',
+                :state => 'active'})
+
+  User.create!({:login => 'publisherOne',
+                :password => 'aaaaaaaa',
+                :email => 'mr@man.com',
+                :profile_id => 2, #publisher
+                :name => 'publisherOne',
+                :state => 'active'})
+  User.create!({:login => 'publisherTwo',
+                :password => 'aaaaaaaa',
+                :email => 'made@up.com',
+                :profile_id => 2, #publisher
+                :name => 'publisherTwo',
                 :state => 'active'})
 end
 
@@ -53,6 +66,22 @@ And /^I am logged into the admin panel$/ do
   else
     assert page.has_content?('Login successful')
   end
+end
+
+And /^I am logged in as (.*)$/ do |user|
+  visit '/accounts/login'
+  fill_in 'user_login', :with => user
+  fill_in 'user_password', :with => 'aaaaaaaa'
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content('Login successful')
+  end
+end
+
+And /^I log out$/ do
+  visit '/accounts/logout'
 end
 
 # Single-line step scoper

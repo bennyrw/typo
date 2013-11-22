@@ -5,52 +5,78 @@ Feature: Merging articles
 
   Background:
     Given the blog is set up
-    And I am logged into the admin panel
-    And I am on the all articles page
+    # article 1
+    And I am logged in as publisherOne
+    When I go to the new article page
+    And I fill in "article_title" with "Alphabet"
+    And I fill in "article__body_and_extended_editor" with "Soup"
+    And I press "Publish"
+    Then I should be on the admin content page
+    When I go to the homepage
+    And I follow "Alphabet"
+    And I fill in "comment_author" with "readerOne"
+    And I fill in "comment_body" with "Alphabet's comment"
+    And I press "comment"
+    And I log out
+    # article 2
+    When I am logged in as publisherTwo
+    And I go to the new article page
+    And I fill in "article_title" with "Zebra"
+    And I fill in "article__body_and_extended_editor" with "Razzamataz"
+    And I press "Publish"
+    Then I should be on the admin content page
+    When I go to the homepage
+    And I follow "Zebra"
+    And I fill in "comment_author" with "readerTwo"
+    And I fill in "comment_body" with "Zebra's comment"
+    And I press "comment"
+    And I log out
+    # log back in as admin
+    When I am logged into the admin panel
+
+  Scenario: Editing an article displays merge button
+    Given I am on the admin content page
+    When I follow "Alphabet"
+    Then I should see "Merge"
 
   Scenario: Merging results in content being combined
-    Given I edit an article
-    When I fill in "merge_with" with "Second article"
+    Given I am on the admin content page
+    When I follow "Alphabet"
+    And I fill in "merge_with" with "Zebra"
     And I press "Merge"
-    Then I should be on the article page
-    And I should see content from the first article
-    And I should see content from the second article
-
-  Scenario: Merging results in a single article
-    Given I edit an article
-    When I fill in "merge_with" with "Second article"
-    And I press "Merge"
-    When I goto the all articles page
-    Then I should see "First article"
-    But I should not see "Second article"
+    Then I should see "Soup"
+    And I should see "Razzamataz"
 
   Scenario: Merging results in one author being chosen
-    Given I edit an article
-    When I fill in "merge_with" with "Second article"
+    Given I am on the admin content page
+    When I follow "Alphabet"
+    And I fill in "merge_with" with "Zebra"
     And I press "Merge"
-    Then I should be on the article page
-    And I should see "First author"
-    But I should not see "Second author"
+    Then I should see "publisherOne"
+    But I should not see "publisherTwo"
 
   Scenario: Merging results in one title being chosen
-    Given I edit an article
-    When I fill in "merge_with" with "Second article"
+    Given I am on the admin content page
+    When I follow "Alphabet"
+    And I fill in "merge_with" with "Zebra"
     And I press "Merge"
-    Then I should be on the article page
-    And I should see "First title"
-    But I should not see "Second title"
+    Then I should see "Alphabet"
+    But I should not see "Zebra"
 
   Scenario: Merging results in comments being kept from both articles
-    Given I edit an article
-    When I fill in "merge_with" with "Second article"
+    Given I am on the admin content page
+    When I follow "Alphabet"
+    And I fill in "merge_with" with "Zebra"
     And I press "Merge"
-    Then I should be on the article page
-    And I should see "Comment from article 1"
-    And I should see "Comment from article 2"
+    Then I go to the admin content page
+    When I follow "Alphabet"
+    Then I should see "Alphabet's comment"
+    And I should see "Zebra's comment"
 
   Scenario: Merging requires an existing article
-    Given I edit an article
-    When I fill in "merge_with" with "Non-existant article"
+    Given I am on the admin content page
+    When I follow "Alphabet"
+    And I fill in "merge_with" with "Made up article"
     And I press "Merge"
-    Then I should see "Article not found"
-    And I should be on the article page
+    Then I should be on the admin content page
+    And I should see "Article not found"
