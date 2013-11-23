@@ -4,3 +4,20 @@
   <%= render :partial => "form" %>
 
 <% end %>
+
+<% if @article.id %>
+  <div class=''>
+    <h4><%= _("Merge Articles") %></h4>
+    <%= form_tag({:controller=> 'admin/content', :action => 'merge'}, method: :get) do %>
+      <%= label_tag 'merge_with', 'Article ID' %>
+      <%= # use text_field_tag since text_field is for accessing fields on the template object
+      text_field_tag 'merge_with'
+      %>
+      <%=
+      # need to include this hidden field so we can get the current article ID resubmitted
+      hidden_field_tag 'merge_target', params[:id]
+      %>
+      <%= submit_tag "Merge", :class => 'btn info' %>
+    <% end %>
+  </div>
+<% end %>
