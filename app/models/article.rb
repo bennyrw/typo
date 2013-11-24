@@ -76,6 +76,27 @@ class Article < Content
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?
   end
 
+  def merge_with(other_article_id)
+    puts "merge_with(#{other_article_id}) called for article #{self.id}"
+    if self.id.to_s == other_article_id.to_s
+      raise "Can not merge an article with itself"
+    end
+
+    other_article = nil
+    begin
+      other_article = Article.find(other_article_id)
+    rescue
+      raise "Article not found: #{other_article_id}"
+    end
+
+    # copy other article's contents to this article
+    # TODO
+    # copy other article's comments to this article
+    # TODO
+    # remove the other article
+    # TODO
+  end
+
   def has_child?
     Article.exists?({:parent_id => self.id})
   end
