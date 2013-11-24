@@ -90,11 +90,27 @@ class Article < Content
     end
 
     # copy other article's contents to this article
-    # TODO
+#puts "!!! merge():1: $#{self.body_and_extended}"
+#puts "!!! merge():2: $#{other_article.body_and_extended}"
+    self.body_and_extended=(self.body_and_extended + "** MERGED **" + other_article.body_and_extended)
+
     # copy other article's comments to this article
-    # TODO
+    # comments are stored as arrays
+#    puts "!!! merge():comments:1: $#{self.comments}"
+#    puts "!!! merge():comments:2: $#{other_article.comments}"
+    (self.comments << other_article.comments).flatten
+
+    # save
+    self.save!()
+
     # remove the other article
-    # TODO
+    # however, before we do that we need to avoid deleting comments which would happen due to
+    # active record having cached the other article and its association to its original comments
+    # see instructions for homework for more details
+    # to work around that, I'm reloading the cache
+    # http://guides.rubyonrails.org/association_basics.html#controlling-caching
+    other_article.comments(true)
+    other_article.destroy()
   end
 
   def has_child?
