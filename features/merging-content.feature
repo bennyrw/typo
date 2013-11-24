@@ -5,7 +5,7 @@ Feature: Merging articles
 
   Background:
     Given the blog is set up
-    # article 1
+    # article ID 3 (#1 is Hello World, #2 is ???)
     And I am logged in as publisherOne
     When I go to the new article page
     And I fill in "article_title" with "Alphabet"
@@ -18,7 +18,7 @@ Feature: Merging articles
     And I fill in "comment_body" with "Alphabet's comment"
     And I press "comment"
     And I log out
-    # article 2
+    # article ID 4
     When I am logged in as publisherTwo
     And I go to the new article page
     And I fill in "article_title" with "Zebra"
@@ -39,10 +39,17 @@ Feature: Merging articles
     When I follow "Alphabet"
     Then I should see "Merge"
 
+  Scenario: Merging with same article is not permitted
+    Given I am on the admin content page
+    When I follow "Alphabet"
+    And I fill in "merge_with" with "3"
+    And I press "Merge"
+    Then I should see "Can not merge an article with itself"
+
   Scenario: Merging results in content being combined
     Given I am on the admin content page
     When I follow "Alphabet"
-    And I fill in "merge_with" with "Zebra"
+    And I fill in "merge_with" with "4"
     And I press "Merge"
     Then I should see "Soup"
     And I should see "Razzamataz"
@@ -50,7 +57,7 @@ Feature: Merging articles
   Scenario: Merging results in one author being chosen
     Given I am on the admin content page
     When I follow "Alphabet"
-    And I fill in "merge_with" with "Zebra"
+    And I fill in "merge_with" with "4"
     And I press "Merge"
     Then I should see "publisherOne"
     But I should not see "publisherTwo"
@@ -58,7 +65,7 @@ Feature: Merging articles
   Scenario: Merging results in one title being chosen
     Given I am on the admin content page
     When I follow "Alphabet"
-    And I fill in "merge_with" with "Zebra"
+    And I fill in "merge_with" with "4"
     And I press "Merge"
     Then I should see "Alphabet"
     But I should not see "Zebra"
@@ -66,7 +73,7 @@ Feature: Merging articles
   Scenario: Merging results in comments being kept from both articles
     Given I am on the admin content page
     When I follow "Alphabet"
-    And I fill in "merge_with" with "Zebra"
+    And I fill in "merge_with" with "4"
     And I press "Merge"
     Then I go to the admin content page
     When I follow "Alphabet"
@@ -76,7 +83,7 @@ Feature: Merging articles
   Scenario: Merging requires an existing article
     Given I am on the admin content page
     When I follow "Alphabet"
-    And I fill in "merge_with" with "Made up article"
+    And I fill in "merge_with" with "999"
     And I press "Merge"
     Then I should be on the admin content page
     And I should see "Article not found"
