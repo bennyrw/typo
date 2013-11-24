@@ -15,7 +15,7 @@ Feature: Merging articles
     When I go to the homepage
     And I follow "Alphabet"
     And I fill in "comment_author" with "readerOne"
-    And I fill in "comment_body" with "Alphabet's comment"
+    And I fill in "comment_body" with "Comment from Alphabet"
     And I press "comment"
     And I log out
     # article ID 4
@@ -28,7 +28,7 @@ Feature: Merging articles
     When I go to the homepage
     And I follow "Zebra"
     And I fill in "comment_author" with "readerTwo"
-    And I fill in "comment_body" with "Zebra's comment"
+    And I fill in "comment_body" with "Comment from Zebra"
     And I press "comment"
     And I log out
     # log back in as admin
@@ -51,6 +51,8 @@ Feature: Merging articles
     When I follow "Alphabet"
     And I fill in "merge_with" with "4"
     And I press "Merge"
+    Then I should see "Articles merged"
+    When I follow "Alphabet"
     Then I should see "Soup"
     And I should see "Razzamataz"
 
@@ -59,7 +61,8 @@ Feature: Merging articles
     When I follow "Alphabet"
     And I fill in "merge_with" with "4"
     And I press "Merge"
-    Then I should see "publisherOne"
+    Then I should be on the admin content page
+    And I should see "publisherOne"
     But I should not see "publisherTwo"
 
   Scenario: Merging results in one title being chosen
@@ -75,10 +78,10 @@ Feature: Merging articles
     When I follow "Alphabet"
     And I fill in "merge_with" with "4"
     And I press "Merge"
-    Then I go to the admin content page
-    When I follow "Alphabet"
-    Then I should see "Alphabet's comment"
-    And I should see "Zebra's comment"
+    When I go to the home page
+    And I follow "Alphabet"
+    Then I should see "Comment from Alphabet"
+    And I should see "Comment from Zebra"
 
   Scenario: Merging requires an existing article
     Given I am on the admin content page
